@@ -1,0 +1,21 @@
+
+.helloworld-label {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: rgba(10,10,10,0.7);
+    border-radius: 5px;
+    padding: .5em;
+}
+
+.stock-button-icon {
+    width: 17px;
+    height: 17px;
+}
+
+.panel-stock-button {
+	padding: 0 8px;
+	background-color: rgba(200, 200, 200, .5);
+	border: 1px solid #cccccc;
+}
+
