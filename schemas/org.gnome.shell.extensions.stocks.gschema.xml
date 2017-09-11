@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="gnome-shell-extension-stocks">
   <schema path="/org/gnome/shell/extensions/stocks/" id="org.gnome.shell.extensions.stocks">
+    <key type="s" name="ticker-symbols">
+      <default>'["FUSVX","NFLX"]'</default>
+      <summary>NYSE Stock Ticker Symbols</summary>
+      <description>Some better description eventually.</description>
+    </key>
   </schema>
 </schemalist>

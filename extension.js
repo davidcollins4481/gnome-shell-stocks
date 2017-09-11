@@ -9,11 +9,13 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const Soup = imports.gi.Soup;
-
+const Convenience = Me.imports.convenience;
 const Util = imports.misc.util;
 const Mainloop = imports.mainloop;
 
-let stockButton;
+const STOCKS_SETTINGS_SCHEMA = 'org.gnome.shell.extensions.stocks';
+let topBox = undefined,
+    menuItem = undefined;
 
 var Stock = new Lang.Class({
     Name: "Stock",
@@ -25,24 +27,6 @@ var Stock = new Lang.Class({
     }
 });
 
-//const StockMenuItem = new Lang.Class({
-//    Name: "StockMenuItem",
-//    Extends: PopupMenu.PopupMenuItem,
-//
-//    _init: function(stock) {
-//        this.stock = stock;
-//        let attrs = {};
-//        let symbolLabel = new St.Label({
-//            style_class: "stock-label"
-//        });
-//
-//        //symbolLabel.text = stock.getSymbol();
-//
-//        //this.parent().actor.add_child(symbolLabel);
-//        this.parent(stock.getSymbol(), attrs);
-//    }
-//});
-
 const StockPanelButton = new Lang.Class({
     Name: "StockPanelButton",
     Extends: PanelMenu.Button,
@@ -50,12 +34,15 @@ const StockPanelButton = new Lang.Class({
     _init: function() {
         var self = this;
         this.parent(0.0, "Stock Widget", false);
+        this._loadConfig()
 
         let gicon = Gio.icon_new_for_string(Me.path + "/images/decresing-chart.svg");
         let icon = new St.Icon({
             gicon: gicon,
             style_class: 'stock-button-icon'
         });
+
+        print('init extension');
 
         this.actor.add_actor(icon);
         this._getStocks();
@@ -88,6 +75,16 @@ const StockPanelButton = new Lang.Class({
 
         button.connect('clicked', Lang.bind(this, this._onPreferencesActivate));
 
+        this.menu.connect('open-state-changed', Lang.bind(this, this._calc));
+    },
+
+    _calc: function() {
+        print('calc');
+        this._getStocks();
+    },
+
+    _loadConfig: function() {
+        this._settings = Convenience.getSettings(STOCKS_SETTINGS_SCHEMA);
     },
 
     _onPreferencesActivate: function() {
@@ -101,19 +98,25 @@ const StockPanelButton = new Lang.Class({
    },
 
     render: function(stocks) {
-        let topBox = new St.BoxLayout({
+        if (this.topBox) {
+            this.topBox.destroy();
+            this.topBox = undefined;
+            this.menuItem.destroy();
+            this.menuItem = undefined;
+        }
+        this.topBox = new St.BoxLayout({
             vertical:true,
             style_class: 'container'
         });
 
         let stockContainer = new St.Bin();
 
-        let menuItem = new PopupMenu.PopupBaseMenuItem({
+        this.menuItem = new PopupMenu.PopupBaseMenuItem({
             reactive: false
         });
 
-        menuItem.actor.add_actor(stockContainer);
-
+        this.menuItem.actor.add_actor(stockContainer);
+        let that = this;
         stocks.forEach(function(stock) {
             let symbolContainer = new St.Bin({
                 style_class: 'stock-symbol-container'
@@ -136,7 +139,6 @@ const StockPanelButton = new Lang.Class({
             });
 
             let change = parseFloat(stock.change.replace('%', ''));
-            log('STOCKS:', change);
             let changeLabel = new St.Label({
                 style_class: change >= 0 ? 'stock-change-positive' : 'stock-change-negative',
                 text: stock.change.toString() 
@@ -154,18 +156,32 @@ const StockPanelButton = new Lang.Class({
             itemBox.add_actor(symbolContainer);
             itemBox.add_actor(valueContainer);
             itemBox.add_actor(changeContainer);
-            topBox.add_actor(itemBox);
+            that.topBox.add_actor(itemBox);
         });
 
-        menuItem.actor.add_actor(topBox);
-        this.menu.addMenuItem(menuItem);
+        this.menuItem.actor.add_actor(this.topBox);
+        this.menu.addMenuItem(this.menuItem);
     },
 
     _getStocks: function() {
         let _httpSession = undefined;
 
+        let symbols = undefined;
+        let savedStocks = this._settings.get_string("ticker-symbols");
+        if (savedStocks) {
+            try {
+                symbols = JSON.parse(savedStocks);
+                symbols = symbols.map(function(s) {
+                    return '"' + s + '"';
+                });
+            } catch (e) {
+            
+            }
+        } else {
+
+        }
+
         let url = 'https://query.yahooapis.com/v1/public/yql';
-        let symbols = ["'FUSVX'", "'RDFN'", "'SNAP'", "'F'", "'CRM'", "'SWPPX'", "'XOM'"];
         let params = {
             'q': 'select * from yahoo.finance.quotes where symbol in ' + '(' + symbols.join(',')  + ')',
             'format' : 'json',
@@ -184,6 +200,10 @@ const StockPanelButton = new Lang.Class({
         var that = this;
         session.queue_message(request, function(session, message) {
             let data = JSON.parse(message.response_body.data);
+            if (!data.query) {
+                return;
+            }
+            
             let results = data.query.results.quote;
 
             var stocks = results.map(q => {
@@ -196,6 +216,8 @@ const StockPanelButton = new Lang.Class({
         });
     }
 });
+
+let stockButton;
 
 function init() {
 }

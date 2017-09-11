@@ -2,6 +2,93 @@
 <!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkWindow" id="new-ticker">
+    <property name="can_focus">False</property>
+    <property name="modal">True</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="gravity">south</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Enter a ticker symbol
+</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">False</property>
+            <property name="padding">16</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButtonBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="spacing">20</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="add-ticker-cancel">
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="add-ticker-symbol">
+                <property name="label" translatable="yes">Ok</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkListStore" id="stocklist-store">
+    <columns>
+      <!-- column-name Ticker -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkNotebook" id="stocks-container">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
@@ -16,9 +103,11 @@
             <property name="can_focus">True</property>
             <property name="shadow_type">in</property>
             <child>
-              <object class="GtkTreeView">
+              <object class="GtkTreeView" id="stocks-treeview">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="model">stocklist-store</property>
+                <property name="enable_grid_lines">horizontal</property>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection"/>
                 </child>
@@ -35,11 +124,10 @@
           <object class="GtkToolbar">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_top">228</property>
             <property name="toolbar_style">icons</property>
             <property name="icon_size">1</property>
             <child>
-              <object class="GtkToolButton" id="tree-toolbutton-add">
+              <object class="GtkToolButton" id="ticker-add">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="icon_name">list-add</property>
@@ -50,7 +138,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="tree-toolbutton-remove">
+              <object class="GtkToolButton" id="ticker-remove">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="icon_name">list-remove</property>
