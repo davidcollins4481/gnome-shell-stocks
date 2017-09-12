@@ -56,7 +56,7 @@ const StockPanelButton = new Lang.Class({
             reactive: true,
             can_focus: true,
             track_hover: true,
-            accessible_name: 'accessible name',//accessibleName,
+            accessible_name: 'accessible name',
             style_class: 'popup-menu-item stock-settings-button'
         });
 

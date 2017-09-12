@@ -1,42 +1,49 @@
 .stock-button-icon {
-    width: 15px;
-    height: 8px;
+    width: 12px;
+    height: 5px;
 }
 
 .stock-settings-button {
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
     border: 1px solid #666;
     border-radius: 30px;
     padding:13px;
     spacing: 12px;
 }
 
+.container {
+    width: 100%;
+}
+
 .stock-item-container {
-    padding: 0;
+    padding: 10px 0;
     margin: 0;
-    width: 200px;
     text-align: left;
 }
 
 .stock-symbol-container {
-    width: 100px;
-    text-align: left;
-    font-size: 20px;
-    margin: 10px 5px 10px 0;
+    width: 100%;
+    padding: 0;
+    color: white;
+    font-size: 17px;
+    padding-right: 100px;
 }
 
 .stock-value-container,
 .stock-change-container {
-    width: 50px;
-    text-align: left;
-    font-size: 15px;
-    margin: 10px 5px;
+    width: 50%;
+    font-size: 17px;
 }
 
-.container {
-    padding: 0;
-    margin: 0;
+.stock-value-container,
+.stock-change-container {
+    padding-right: 17px;
+}
+
+
+
+.stock-value-container {
 }
 
 .stock-change-positive {
