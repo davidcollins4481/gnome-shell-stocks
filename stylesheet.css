@@ -1,6 +1,7 @@
 .stock-button-icon {
-    width: 12px;
-    height: 5px;
+    width: 20px;
+    padding: 5px 0;
+    color: white;
 }
 
 .stock-settings-button {
@@ -17,9 +18,9 @@
 }
 
 .stock-item-container {
-    padding: 10px 0;
     margin: 0;
-    text-align: left;
+    min-width: 200px;
+    display: inline-block;
 }
 
 .stock-symbol-container {
@@ -27,24 +28,31 @@
     padding: 0;
     color: white;
     font-size: 17px;
-    padding-right: 100px;
 }
 
 .stock-value-container,
 .stock-change-container {
-    width: 50%;
     font-size: 17px;
 }
 
+.stock-symbol-container,
 .stock-value-container,
 .stock-change-container {
-    padding-right: 17px;
+    padding: 5px 20px;
+}
+
+.stock-symbol-container > StLabel,
+.stock-value-container > StLabel,
+.stock-change-container > StLabel {
+    width: 75px;
 }
 
 
-
-.stock-value-container {
+.stock-change-container,
+.stock-value-container > StLabel {
+    padding-left: 0;
 }
+
 
 .stock-change-positive {
     color: green;

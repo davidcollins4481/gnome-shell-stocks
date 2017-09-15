@@ -42,8 +42,6 @@ const StockPanelButton = new Lang.Class({
             style_class: 'stock-button-icon'
         });
 
-        print('init extension');
-
         this.actor.add_actor(icon);
         this._getStocks();
 

@@ -39,6 +39,12 @@ const StocksPrefsWidget = new GObject.Class({
         this.tickerAdd.connect('clicked', Lang.bind(this, this.addTickerSymbol));
         this.tickerRemove.connect('clicked', Lang.bind(this, this.removeTickerSymbol));
 
+        this.Window.get_object("add-ticker-cancel").connect("clicked", Lang.bind(this, function() {
+            this.newTicker.hide();
+        }));
+
+        this.Window.get_object('add-ticker-symbol').connect('clicked', Lang.bind(this, this.saveTickerSymbol));
+
         let column = new Gtk.TreeViewColumn();
         column.set_title(_("Stock"));
         this.treeview.append_column(column);
@@ -49,12 +55,19 @@ const StocksPrefsWidget = new GObject.Class({
     Window: new Gtk.Builder(),
 
     addTickerSymbol: function() {
-        print('clicking add ticker');
+        let newSymbolEntry = this.Window.get_object('entered-symbol').set_text('');
         this.newTicker.show_all();
     },
 
+    saveTickerSymbol: function() {
+        let newSymbolEntry = this.Window.get_object('entered-symbol');
+        let ticker = newSymbolEntry.get_text();
+        this.addStock(ticker);
+        this.refreshUI();
+        this.newTicker.hide();
+    },
+
     removeTickerSymbol: function() {
-        //print(this.treeview.get_selection().get_selected_rows());
         let selection = this.treeview.get_selection();
         let [model, pathlist] = selection.get_selected_rows();
 
@@ -98,6 +111,14 @@ const StocksPrefsWidget = new GObject.Class({
 
     initWindow: function() {
         this.Window.add_from_file(EXTENSIONDIR + "/settings.glade");
+    },
+
+    addStock: function(tickerSymbol) {
+        let savedStocks = this._settings.get_string("ticker-symbols");
+        let symbols = JSON.parse(savedStocks);
+        symbols.push(tickerSymbol);
+        this.stocks = symbols;
+        print('adding');
     },
 
     set stocks(s) {
